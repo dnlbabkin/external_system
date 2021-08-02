@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_114yndb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="security" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="security">
+      <bpmn:outgoing>Flow_1wpz8wk</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_01pxlcp" name="Подбор персонала" camunda:assignee="${security}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="candidate_name" label="ФИО" type="string" />
+          <camunda:formField id="app_number" label="Номер заявки" type="long" />
+          <camunda:formField id="born_date" label="Дата рождения" type="string" />
+          <camunda:formField id="experience" label="Стаж" type="long" />
+          <camunda:formField id="last_work_place" label="Прошлые места работы" type="string" />
+          <camunda:formField id="app" label="Статус" type="enum">
+            <camunda:value id="approved" name="approved" />
+            <camunda:value id="cancelled" name="cancelled" />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ttm9n4</bpmn:incoming>
+      <bpmn:outgoing>Flow_06brodl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1wpz8wk" sourceRef="StartEvent_1" targetRef="Activity_1jf5xxb" />
+    <bpmn:sequenceFlow id="Flow_06brodl" sourceRef="Activity_01pxlcp" targetRef="Activity_1q14yl1" />
+    <bpmn:endEvent id="Event_0tt677d">
+      <bpmn:incoming>Flow_1uls21c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0dbv73z" sourceRef="Activity_1jf5xxb" targetRef="Activity_0sejx8t" />
+    <bpmn:serviceTask id="Activity_1jf5xxb" name="Установка статуса: in_work" camunda:delegateExpression="${ChangeStatus}">
+      <bpmn:extensionElements>
+        <camunda:field name="status_name">
+          <camunda:string>status</camunda:string>
+        </camunda:field>
+        <camunda:field name="status_value">
+          <camunda:string>in_work</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wpz8wk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dbv73z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ttm9n4" sourceRef="Activity_0sejx8t" targetRef="Activity_01pxlcp" />
+    <bpmn:serviceTask id="Activity_0sejx8t" name="Установка полей" camunda:delegateExpression="${GetFields}">
+      <bpmn:incoming>Flow_0dbv73z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ttm9n4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1uls21c" sourceRef="Activity_1q14yl1" targetRef="Event_0tt677d" />
+    <bpmn:serviceTask id="Activity_1q14yl1" name="Принятие решения" camunda:delegateExpression="${StatusApp}">
+      <bpmn:incoming>Flow_06brodl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uls21c</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:signal id="Signal_03v2p8x" name="Signal_129r866" />
+  <bpmn:signal id="Signal_04ped2x" name="reject" />
+  <bpmn:signal id="Signal_1mue6q5" name="Signal_09p4kn1" />
+  <bpmn:signal id="Signal_02dsein" name="reject_app" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="security">
+      <bpmndi:BPMNEdge id="Flow_1ttm9n4_di" bpmnElement="Flow_1ttm9n4">
+        <di:waypoint x="620" y="120" />
+        <di:waypoint x="740" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dbv73z_di" bpmnElement="Flow_0dbv73z">
+        <di:waypoint x="410" y="120" />
+        <di:waypoint x="520" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06brodl_di" bpmnElement="Flow_06brodl">
+        <di:waypoint x="840" y="120" />
+        <di:waypoint x="910" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wpz8wk_di" bpmnElement="Flow_1wpz8wk">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="310" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uls21c_di" bpmnElement="Flow_1uls21c">
+        <di:waypoint x="1010" y="120" />
+        <di:waypoint x="1102" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0recweg_di" bpmnElement="Activity_01pxlcp">
+        <dc:Bounds x="740" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_042loc8_di" bpmnElement="Activity_1jf5xxb">
+        <dc:Bounds x="310" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z5qeuv_di" bpmnElement="Activity_0sejx8t">
+        <dc:Bounds x="520" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tt677d_di" bpmnElement="Event_0tt677d">
+        <dc:Bounds x="1102" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i99lwn_di" bpmnElement="Activity_1q14yl1">
+        <dc:Bounds x="910" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
